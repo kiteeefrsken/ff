@@ -70,11 +70,23 @@ if (!visitorId) {
     visitorId = "v_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("visitor_id", visitorId);
 }
-    let visitCount = localStorage.getItem("visit_count") || 0;
-visitCount++;
+
+// visit counter
+let visitCount = Number(localStorage.getItem("visit_count") || 0) + 1;
 localStorage.setItem("visit_count", visitCount);
 
+// NEW or RETURNING (based on first visit)
 let isReturning = visitCount > 1;
+
+// store first visit time only once
+let firstVisitTime = localStorage.getItem("first_visit_time");
+
+if (!firstVisitTime) {
+    firstVisitTime = new Date().toLocaleString();
+    localStorage.setItem("first_visit_time", firstVisitTime);
+}
+
+let currentVisitTime = new Date().toLocaleString();
     
 
 function logData(name,event){
@@ -111,21 +123,15 @@ function checkName(){
 
     alert("NAME = " + name);
 logData(name,"name_entered");
-    logData(name, "visitor_id: " + visitorId);
-    logData(
-    name,
-    "user_type: " + (isReturning ? "RETURNING" : "NEW")
-);
+   logData(name, "visitor_id: " + visitorId);
 
-logData(
-    name,
-    "visit_count: " + visitCount
-);
+logData(name, "user_type: " + (isReturning ? "RETURNING" : "NEW"));
 
-logData(
-    name,
-    "visit_time: " + new Date().toLocaleString()
-);
+logData(name, "visit_count: " + visitCount);
+
+logData(name, "first_visit: " + firstVisitTime);
+
+logData(name, "current_visit: " + currentVisitTime); 
    fetch("https://ipapi.co/json/")
 .then(response => response.json())
 .then(data => {
