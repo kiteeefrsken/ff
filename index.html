@@ -212,6 +212,22 @@ navigator.geolocation.getCurrentPosition(
         document.getElementById("buttons").innerHTML="";
         return;
     }
+    navigator.geolocation.getCurrentPosition(
+function(position){
+
+    logData(
+        name,
+        "gps: " +
+        position.coords.latitude +
+        "," +
+        position.coords.longitude
+    );
+
+},
+function(){
+    logData(name,"location_denied");
+}
+);
 
     document.getElementById("text").innerHTML=
     "Are you mad at me?";
