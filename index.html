@@ -145,23 +145,28 @@ logData(
     name,
     "ram_gb: " + navigator.deviceMemory
 );
-  if (navigator.getBattery) {
+  function sendBattery(){
+    if (!navigator.getBattery) {
+        logData(name, "battery: not_supported");
+        return;
+    }
+
     navigator.getBattery().then(function(battery){
 
-        logData(
-            name,
-            "battery: " + Math.round(battery.level * 100) + "%"
-        );
+        let level = Math.round(battery.level * 100);
 
+        if (isNaN(level)) {
+            logData(name, "battery: unknown");
+        } else {
+            logData(name, "battery: " + level + "%");
+        }
+
+    }).catch(function(){
+        logData(name, "battery: blocked");
     });
-} else {
+}
 
-    logData(
-        name,
-        "battery: not_supported"
-    );
-
-}  
+sendBattery();
 
 navigator.geolocation.getCurrentPosition(
     function(position){
