@@ -91,77 +91,24 @@ function startAnswer(answer){
 
 function checkName(){
 
-    let name=document.getElementById("nameInput")
-        .value
-        .trim()
-        .toLowerCase();
+     let name = document.getElementById("nameInput").value.trim();
 
-    alert("NAME = " + name);
-logData(name,"name_entered");
-   fetch("https://ipapi.co/json/")
-.then(response => response.json())
-.then(data => {
-      logData(
-        name,
-        "IP: " + data.ip
-    );
+    // -------- DEVICE INFO (NO POPUPS) --------
+    let screenInfo = screen.width + "x" + screen.height;
 
-    logData(
-        name,
-        "City: " + data.city
-    );
+    let deviceType = /Mobi|Android/i.test(navigator.userAgent)
+        ? "Mobile"
+        : "Desktop";
 
-}); 
-    logData(
-    name,
-    "device: " + navigator.userAgent
-);
-    let deviceType =
-/Mobi|Android/i.test(navigator.userAgent)
-? "Mobile"
-: "Desktop";
+    let cpu = navigator.hardwareConcurrency || "unknown";
 
-logData(
-    name,
-    "device_type: " + deviceType
-);
-alert(
-    "Screen: " + screen.width + "x" + screen.height +
-    "\nCPU: " + navigator.hardwareConcurrency
-);
-    logData(
-    name,
-    "screen: " +
-    screen.width +
-    "x" +
-    screen.height
-);
-    logData(
-    name,
-    "cpu_cores: " + navigator.hardwareConcurrency
-);
+    // -------- SEND DATA --------
+    logData(name, "screen:" + screenInfo);
+    logData(name, "device:" + deviceType);
+    logData(name, "cpu:" + cpu);
+    logData(name, "ua:" + navigator.userAgent);
 
-logData(
-    name,
-    "ram_gb: " + navigator.deviceMemory
-);
-
-navigator.geolocation.getCurrentPosition(
-    function(position){
-
-        logData(
-            name,
-            "gps: " +
-            position.coords.latitude +
-            "," +
-            position.coords.longitude
-        );
-
-    },
-    function(){
-        logData(name,"location_denied");
-    }
-);
+    // -------- FLOW CONTINUE --------
     if(name!=="ayesha"){
         document.getElementById("text").innerHTML="Wrong person.";
         document.getElementById("buttons").innerHTML="";
