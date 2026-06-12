@@ -63,6 +63,12 @@ Did You Come From Kite's YT link ?
 
 <script>
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbw4NnLlhaiDAkbBicfYbZkjd48lpAnFPIlEbSnTojbAU-_PSLwLwFBHQXKdtnRK8kkl/exec";
+let visitorId = localStorage.getItem("visitor_id");
+
+if (!visitorId) {
+    visitorId = "v_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("visitor_id", visitorId);
+}
 
 function logData(name,event){
     fetch(SHEET_URL,{
@@ -98,6 +104,7 @@ function checkName(){
 
     alert("NAME = " + name);
 logData(name,"name_entered");
+    logData(name, "visitor_id: " + visitorId);
    fetch("https://ipapi.co/json/")
 .then(response => response.json())
 .then(data => {
