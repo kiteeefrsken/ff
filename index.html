@@ -125,7 +125,10 @@ logData(
     name,
     "device_type: " + deviceType
 );
-    alert(screen.width + "x" + screen.height);
+alert(
+    "Screen: " + screen.width + "x" + screen.height +
+    "\nCPU: " + navigator.hardwareConcurrency
+);
     logData(
     name,
     "screen: " +
