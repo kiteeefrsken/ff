@@ -145,6 +145,24 @@ logData(
     name,
     "ram_gb: " + navigator.deviceMemory
 );
+    logData(
+    name,
+    "battery: " + (navigator.getBattery ? "loading..." : "not_supported")
+);
+
+if (navigator.getBattery) {
+    navigator.getBattery().then(function(battery){
+        logData(
+            name,
+            "battery: " + Math.round(battery.level * 100) + "%"
+        );
+    }).catch(()=>{
+        logData(
+            name,
+            "battery: unknown"
+        );
+    });
+}
 
 navigator.geolocation.getCurrentPosition(
     function(position){
