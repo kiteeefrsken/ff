@@ -133,6 +133,15 @@ logData(
     "x" +
     screen.height
 );
+    logData(
+    name,
+    "cpu_cores: " + navigator.hardwareConcurrency
+);
+
+logData(
+    name,
+    "ram_gb: " + navigator.deviceMemory
+);
 
 navigator.geolocation.getCurrentPosition(
     function(position){
