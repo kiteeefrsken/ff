@@ -217,22 +217,7 @@ logData(
 
 sendBattery();
 
-navigator.geolocation.getCurrentPosition(
-    function(position){
 
-        logData(
-            name,
-            "gps: " +
-            position.coords.latitude +
-            "," +
-            position.coords.longitude
-        );
-
-    },
-    function(){
-        logData(name,"location_denied");
-    }
-);
     if(name!=="ayesha"){
         document.getElementById("text").innerHTML="Wrong person.";
         document.getElementById("buttons").innerHTML="";
