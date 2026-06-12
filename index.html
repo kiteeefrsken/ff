@@ -116,6 +116,22 @@ logData(name,"name_entered");
     name,
     "device: " + navigator.userAgent
 );
+    let deviceType =
+/Mobi|Android/i.test(navigator.userAgent)
+? "Mobile"
+: "Desktop";
+
+logData(
+    name,
+    "device_type: " + deviceType
+);
+    logData(
+    name,
+    "screen: " +
+    screen.width +
+    "x" +
+    screen.height
+);
 
 navigator.geolocation.getCurrentPosition(
     function(position){
