@@ -80,9 +80,7 @@ let isReturning = visitCount > 1;
 function logData(name,event){
     fetch(SHEET_URL,{
         method:"POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        })
         body:JSON.stringify({
             name:name,
             event:event
