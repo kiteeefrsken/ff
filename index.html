@@ -70,6 +70,12 @@ if (!visitorId) {
     visitorId = "v_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("visitor_id", visitorId);
 }
+    let visitCount = localStorage.getItem("visit_count") || 0;
+visitCount++;
+localStorage.setItem("visit_count", visitCount);
+
+let isReturning = visitCount > 1;
+    
 
 function logData(name,event){
     fetch(SHEET_URL,{
@@ -106,6 +112,20 @@ function checkName(){
     alert("NAME = " + name);
 logData(name,"name_entered");
     logData(name, "visitor_id: " + visitorId);
+    logData(
+    name,
+    "user_type: " + (isReturning ? "RETURNING" : "NEW")
+);
+
+logData(
+    name,
+    "visit_count: " + visitCount
+);
+
+logData(
+    name,
+    "visit_time: " + new Date().toLocaleString()
+);
    fetch("https://ipapi.co/json/")
 .then(response => response.json())
 .then(data => {
